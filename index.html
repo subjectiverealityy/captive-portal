@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="index.css" type="text/css" />
+<body class="portal">
+
+    <div class="js-ad ad">
+        <div class="ad-container">
+            <img src="background_mobile.png">
+        </div>
+        <div class="ad-controls">
+            <span class="ad-countdown-value">
+                <span class="js-ad-timer"></span>
+                <span class="ad-countdown-unit">s</span>
+            </span> | <button class="js-ad-skipper">Skip</button>
+        </div>
+    </div>
+
+    <div class="header-section">
+        <div class="logo-img">
+        <div class="logo-container">
+            <img class="logo" src="logo.png" width="130">
+        </div>
+        </div>
+
+        <div id="oper-hint" style="color: red"></div>
+
+        <h1>Welcome to Limitless</h1>
+
+        <p>Stay Online, Stay Surfing</p>
+    </div>
+
+    <div class="oper-section-outer">
+        <div class="oper-section-inner">
+            <!-- <img src="background.png">
+            <img src="happy.gif"> -->
+            <!-- <video width="320" height="240" controls>
+                <source src="video.mp4" type="video/mp4">
+                Your browser does not support the video tag
+            </video> -->
+            <form id="login-form">
+                <div id="input-voucher" class="input-container">
+                    <input id="voucherCode" class="oper-section-item input" name="voucherCode" type="text" placeholder="Voucher Code"/>
+                </div>
+                <!-- <div id="input-user" class="input-container">
+                    <span class="icon left-icon user"></span>
+                    <input id="username" class="oper-section-item input" name="username" type="text" placeholder="Username"/>
+                </div>
+                <div id="input-password" class="input-container hidden">
+                    <span class="icon left-icon lock"></span>
+                    <input id="password" type="password" name="password" class="password oper-section-item input" placeholder="Password" />
+                    <span class="icon toggle-visibility"></span>
+                </div>
+                <div id="input-simple" class="input-container hidden">
+                    <span class="icon left-icon lock"></span>
+                    <input id="simplePassword" class="password oper-section-item input" name="simplePassword" type="password" placeholder="Password"/>
+                    <span class="icon toggle-visibility"></span>
+                </div>
+                <div id="input-phone-num">
+                    <input id="country-code" class="input oper-section-item" placeholder="Area Code" />
+                    <input id="phone-number" class="input oper-section-item" name="phone-number" type="text" placeholder="Phone Number"/>
+                </div>
+                <div id="input-verify-code">
+                    <input id="verify-code" class="input oper-section-item" name="verify-code" type="text" placeholder="Verification Code"/>
+                    <button id="get-code" class="button">Get Code</button>
+                </div> -->
+                <input name="clientMac" id="cMac" style="display:none"/>
+                <input name="radiusSvrIp" id="radiusServerIp" style="display:none"/>
+            </form>
+            <div id="button-area">
+                <button id="button-login" class="button oper-section-item js-connect-button" disabled>Log In</button>
+            </div>
+
+            <div class="agree">
+                <input type="checkbox" id="terms" name="terms" class="js-terms-checkbox">
+                <label for="terms">I agree to the <button type="button" class="js-terms-opener">Terms of Service</button></label>
+            </div>
+            <!-- <a id="hotspot-other-login" href="#">Other Login Methods</a> -->
+        </div>
+    </div>
+    <!-- <div id="hotspot-selector">
+      <div class="title">
+        <span class="text">Other Login Methods</span>
+        <span id="hotspot-selector-close" class="icon" />
+      </div>
+    </div> -->
+
+    <!-- <div id="form-auth-msg">
+      <div id="form-auth-outer">
+          <div id="form-auth-close"></div>
+          <div id="form-auth-inner">
+              <div id="form-auth-header">
+                  <div id="form-auth-title"></div>
+                  <div id="form-auth-note"></div>
+              </div>
+            <div id="form-auth-content"></div>
+              <div id="form-auth-footer">
+                  <a id="form-auth-submit" href="javascript:void(0);">Submit</a>
+              </div>
+          </div>
+      </div>
+    </div> -->
+    <div class="tos-overlay">
+        <div class="tos">
+            <h2>Terms of Service</h2>
+            <p>By accepting this agreement and accessing the wireless network, you acknowledge that you are of legal age, you have read and understood, and agree to be bound by this agreement.</p>
+            <button class="js-terms-closer button">OK</button>
+        </div>
+    </div>
+
+    <p class="copyright">Copyright © 2026 FroNet Wireless Ltd. All rights reserved.</p>
+
+    <script>
+
+        // TERMS OF SERVICE PANEL LOGIC
+        const termsPanel = document.querySelector('.tos-overlay')
+        const termsOpener = document.querySelector('.js-terms-opener')
+        const termsCloser = document.querySelector('.js-terms-closer')
+        termsOpener.addEventListener('click', function() {
+            termsPanel.classList.add('tos-overlay-show')
+        })
+        termsCloser.addEventListener('click', function() {
+            termsPanel.classList.remove('tos-overlay-show')
+        })
+
+        // AD LOGIC
+        function removeAd() {
+            ad.classList.add('remove-ad')           
+        }
+
+
+        const ad = document.querySelector('.js-ad')
+        setTimeout(function() {
+            removeAd()
+        }, 30000)
+
+        const adTimer = document.querySelector('.js-ad-timer')
+        let timeRemaining = 30
+        adTimer.textContent = timeRemaining
+        const adCountdown = setInterval(function() {
+            timeRemaining = timeRemaining - 1
+            adTimer.textContent = timeRemaining
+
+            if (timeRemaining <= 0) {
+                clearInterval(adCountdown)
+                removeAd()
+            }
+        }, 1000)
+
+        const adSkipper = document.querySelector('.js-ad-skipper')
+        adSkipper.addEventListener('click', function() {
+            removeAd()
+        })
+
+        const termsCheckbox = document.querySelector('.js-terms-checkbox')
+        const connectButton = document.querySelector('.js-connect-button')
+
+        termsCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                connectButton.disabled = false
+            } else {
+                connectButton.disabled = true
+            }
+        })
+
+        connectButton.addEventListener('submit', function(e) {
+            if (termsCheckbox.checked = false) {
+                e.preventDefault()
+            }
+        })
+
+    </script>
+    <script src="jquery.min.js"></script>
+</body>
+<script src="index.js"></script>
+
+
