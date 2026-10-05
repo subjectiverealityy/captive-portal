@@ -282,11 +282,20 @@ Ajax.post(
                     Ajax.post(submitUrl, JSON.stringify(submitData).toString(), function(data){
                         data = JSON.parse(data);
                         if(!!data && data.errorCode === 0) {
+                            // LOGIN SUCCESS
+                            gtag('event', 'voucher_login_success', {
+                                method: 'voucher'
+                            });
                             isCommited = true;
                             landingUrl = data.result || landingUrl
                             window.location.href = landingUrl;
                             document.getElementById("oper-hint").innerHTML = errorHintMap[data.errorCode];
                         } else{
+                            // LOGIN FAILURE
+                            gtag('event', 'voucher_login_failure', {
+                                method: 'voucher',
+                                error_code: String(data.errorCode)
+                            });
                             document.getElementById("oper-hint").innerHTML = errorHintMap[data.errorCode];
                         }
                     });

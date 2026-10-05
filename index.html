@@ -75,6 +75,11 @@
                 <input type="checkbox" id="terms" name="terms" class="js-terms-checkbox">
                 <label for="terms">I agree to the <button type="button" class="js-terms-opener">Terms of Service</button></label>
             </div>
+
+            <div class="extra-links">
+                <a href="https://fronet.com.ng" class="extra-link">Visit Our Website</a>
+                <a href="https://paystack.shop/pay/froweek" class="extra-link">View Our FroWeek Plan</a>
+            </div>
             <!-- <a id="hotspot-other-login" href="#">Other Login Methods</a> -->
         </div>
     </div>
@@ -168,6 +173,12 @@
                 e.preventDefault()
             }
         })
+
+        document.getElementById('button-login').addEventListener('click', function () {
+            gtag('event', 'voucher_login_attempt', {
+                method: 'voucher'
+            });
+        });
 
     </script>
     <script src="jquery.min.js"></script>

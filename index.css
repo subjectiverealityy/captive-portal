@@ -662,3 +662,26 @@ button.js-terms-opener {
   bottom: 6px;
   width: 100%;
 }
+
+.extra-links {
+  width: 100%;
+  display: flex;
+  justify-content:space-between;
+  gap: 8px;
+}
+
+.extra-link {
+    background-color: rgb(255, 255, 255);
+    color: var(--brand);
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+    line-height: 42px;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
