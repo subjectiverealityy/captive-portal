@@ -10,7 +10,11 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', 'G-QGSS3SL467');
+    // Send the page URL without its query string (because the query string normally holds clientMac, apMac, originUrl etc - that's a privacy concern)
+    gtag('config', 'G-QGSS3SL467', {
+        page_location: location.origin + location.pathname,
+        page_referrer: document.referrer.split('?')[0]
+    });
     </script>
 </head>
 <body class="portal">
@@ -88,8 +92,8 @@
             </div>
 
             <div class="extra-links">
-                <a href="https://fronet.com.ng" class="extra-link">Visit Our Website</a>
-                <a href="https://paystack.shop/pay/froweek" class="extra-link">View Our FroWeek Plan</a>
+                <a href="https://fronet.com.ng" class="extra-link" data-track-event="website_click">Visit Our Website</a>
+                <a href="https://paystack.shop/pay/froweek" class="extra-link" data-track-event="plan_click">View Our FroWeek Plan</a>
             </div>
             <!-- <a id="hotspot-other-login" href="#">Other Login Methods</a> -->
         </div>
@@ -134,49 +138,56 @@
         const termsCloser = document.querySelector('.js-terms-closer')
         termsOpener.addEventListener('click', function() {
             termsPanel.classList.add('tos-overlay-show')
+            gtag('event', 'portal_terms_view');
         })
         termsCloser.addEventListener('click', function() {
             termsPanel.classList.remove('tos-overlay-show')
         })
 
         // AD LOGIC
-        function removeAd() {
-            ad.classList.add('remove-ad')           
+        const ad = document.querySelector('.js-ad');
+        const adTimer = document.querySelector('.js-ad-timer');
+        const adSkipper = document.querySelector('.js-ad-skipper');
+
+        const adStartTime = Date.now();
+        const adDurationSeconds = 30;
+
+        function adSecondsElapsed() {
+            return Math.min(
+                adDurationSeconds,
+                Math.floor((Date.now() - adStartTime) / 1000)
+            );
         }
 
+        adTimer.textContent = adDurationSeconds;
 
-        const ad = document.querySelector('.js-ad')
-        setTimeout(function() {
-            removeAd()
-        }, 30000)
-
-        const adTimer = document.querySelector('.js-ad-timer')
-        let timeRemaining = 30
-        adTimer.textContent = timeRemaining
         const adCountdown = setInterval(function() {
-            timeRemaining = timeRemaining - 1
-            adTimer.textContent = timeRemaining
+            const timeRemaining = adDurationSeconds - adSecondsElapsed();
+            adTimer.textContent = timeRemaining;
 
             if (timeRemaining <= 0) {
-                clearInterval(adCountdown)
-                removeAd()
+                // If the countdown finished, the visitor did not skip.
+                clearInterval(adCountdown);
+                gtag('event', 'portal_ad_view', { skipped: false });
+                ad.classList.add('remove-ad');
             }
-        }, 1000)
+        }, 1000);
 
-        const adSkipper = document.querySelector('.js-ad-skipper')
         adSkipper.addEventListener('click', function() {
-            removeAd()
-        })
+            clearInterval(adCountdown);
+            gtag('event', 'portal_ad_view', {
+                skipped: true,
+                ad_skip_seconds: adSecondsElapsed()
+            });
+            ad.classList.add('remove-ad');
+        });
 
         const termsCheckbox = document.querySelector('.js-terms-checkbox')
         const connectButton = document.querySelector('.js-connect-button')
-
+        
+        // TOS
         termsCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                connectButton.disabled = false
-            } else {
-                connectButton.disabled = true
-            }
+            connectButton.disabled = !this.checked;
         })
 
         connectButton.addEventListener('submit', function(e) {
@@ -185,9 +196,11 @@
             }
         })
 
-        document.getElementById('button-login').addEventListener('click', function () {
-            gtag('event', 'voucher_login_attempt', {
-                method: 'voucher'
+        // EXTRA LINKS
+        // 'beacon' transport lets the event be sent even though the click navigates the user away.
+        document.querySelectorAll('.extra-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                gtag('event', link.dataset.trackEvent, { transport_type: 'beacon' });
             });
         });
 
