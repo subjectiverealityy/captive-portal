@@ -43,7 +43,7 @@ body.portal.mobile {
     background-color: #2F2E2E;
 }
 
-.ad {
+.promo {
   background-color: #FFF;
   padding-left: 20px;
   padding-right: 20px;
@@ -54,11 +54,11 @@ body.portal.mobile {
   place-items: center;
 }
 
-.ad img {
+.promo img {
   max-width: 100%;
 }
 
-.ad-controls {
+.promo-controls {
   position: absolute;
   right: 4px;
   top: 4px;
@@ -68,17 +68,17 @@ body.portal.mobile {
   padding: 2px 8px;
 }
 
-.ad-countdown-value, .ad-controls button {
+.promo-countdown-value, .promo-controls button {
   color: var(--brand);
 }
 
-.ad-controls button {
+.promo-controls button {
   background: transparent;
   font-size: inherit;
   border: 0px;
 }
 
-.remove-ad {
+.remove-promo {
   display: none;
 }
 

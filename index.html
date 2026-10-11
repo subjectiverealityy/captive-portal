@@ -19,15 +19,15 @@
 </head>
 <body class="portal">
 
-    <div class="js-ad ad">
-        <div class="ad-container">
+    <div class="js-promo promo">
+        <div class="promo-container">
             <img src="background_mobile.png">
         </div>
-        <div class="ad-controls">
-            <span class="ad-countdown-value">
-                <span class="js-ad-timer"></span>
-                <span class="ad-countdown-unit">s</span>
-            </span> | <button class="js-ad-skipper">Skip</button>
+        <div class="promo-controls">
+            <span class="promo-countdown-value">
+                <span class="js-promo-timer"></span>
+                <span class="promo-countdown-unit">s</span>
+            </span> | <button class="js-promo-skipper">Skip</button>
         </div>
     </div>
 
@@ -145,9 +145,9 @@
         })
 
         // AD LOGIC
-        const ad = document.querySelector('.js-ad');
-        const adTimer = document.querySelector('.js-ad-timer');
-        const adSkipper = document.querySelector('.js-ad-skipper');
+        const ad = document.querySelector('.js-promo');
+        const adTimer = document.querySelector('.js-promo-timer');
+        const adSkipper = document.querySelector('.js-promo-skipper');
 
         const adStartTime = Date.now();
         const adDurationSeconds = 30;
@@ -168,18 +168,18 @@
             if (timeRemaining <= 0) {
                 // If the countdown finished, the visitor did not skip.
                 clearInterval(adCountdown);
-                gtag('event', 'portal_ad_view', { skipped: false });
-                ad.classList.add('remove-ad');
+                gtag('event', 'portal_promo_view', { skipped: false });
+                ad.classList.add('remove-promo');
             }
         }, 1000);
 
         adSkipper.addEventListener('click', function() {
             clearInterval(adCountdown);
-            gtag('event', 'portal_ad_view', {
+            gtag('event', 'portal_promo_view', {
                 skipped: true,
-                ad_skip_seconds: adSecondsElapsed()
+                promo_skip_seconds: adSecondsElapsed()
             });
-            ad.classList.add('remove-ad');
+            ad.classList.add('remove-promo');
         });
 
         const termsCheckbox = document.querySelector('.js-terms-checkbox')
