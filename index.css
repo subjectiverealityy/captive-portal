@@ -622,6 +622,8 @@ button.js-terms-opener {
   inset: 0;
   width: 100vw;
   height: 100vh;
+  /* dvh excludes mobile browser toolbars (e.g. Edge's bottom address bar); vh above is the fallback for browsers that don't support dvh */
+  height: 100dvh;
   place-items: center;
   display: none;
 }
@@ -632,6 +634,7 @@ button.js-terms-opener {
   background-color: #FFF;
   color: #000;
   padding: 30px 15px;
+  /* padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); */
   border-radius: 20px;
 }
 .tos h2 {
