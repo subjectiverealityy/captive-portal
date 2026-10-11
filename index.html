@@ -133,15 +133,21 @@
     <script>
 
         // TERMS OF SERVICE PANEL LOGIC
-        const termsPanel = document.querySelector('.tos-overlay')
+        const termsOverlay = document.querySelector('.tos-overlay')
         const termsOpener = document.querySelector('.js-terms-opener')
         const termsCloser = document.querySelector('.js-terms-closer')
         termsOpener.addEventListener('click', function() {
-            termsPanel.classList.add('tos-overlay-show')
+            termsOverlay.classList.add('tos-overlay-show')
             gtag('event', 'portal_terms_view');
         })
         termsCloser.addEventListener('click', function() {
-            termsPanel.classList.remove('tos-overlay-show')
+            termsOverlay.classList.remove('tos-overlay-show')
+        })
+        // Clicking the area around the terms box (the overlay itself, not the box) also closes it
+        termsOverlay.addEventListener('click', function(e) {
+            if (e.target === termsOverlay) {
+                termsOverlay.classList.remove('tos-overlay-show')
+            }
         })
 
         // AD LOGIC
