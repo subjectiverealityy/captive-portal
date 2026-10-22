@@ -25,6 +25,12 @@ var Ajax = {
         xhr.send(data);
     }
 };
+// Several inputs (username, password, SMS, hotspot selector) are commented out of index.html.
+// getElementById returns null for those, which crashed the page script before the login button
+// click handler was attached. Return a detached stand-in element instead so the code keeps running.
+function getEl(id) {
+    return document.getElementById(id) || document.createElement("div");
+}
 var data = {};
 var globalConfig = {};
 var submitUrl;
@@ -185,23 +191,23 @@ Ajax.post(
         }
         function pageConfigParse(){
             if (res.errorCode !== 0){
-                document.getElementById("oper-hint").style.display = "block";
-                document.getElementById("oper-hint").innerHTML = errorHintMap[res.errorCode];
+                getEl("oper-hint").style.display = "block";
+                getEl("oper-hint").innerHTML = errorHintMap[res.errorCode];
             }
-            document.getElementById("hotspot-other-login").style.display = "none";
-            document.getElementById("hotspot-selector").style.display = "none";
-            document.getElementById("input-voucher").style.display = "none";
-            document.getElementById("input-user").style.display = "none";
-            document.getElementById("input-password").style.display = "none";
-            document.getElementById("input-simple").style.display = "none";
-            document.getElementById("input-phone-num").style.display = "none";
-            document.getElementById("input-verify-code").style.display = "none";
+            getEl("hotspot-other-login").style.display = "none";
+            getEl("hotspot-selector").style.display = "none";
+            getEl("input-voucher").style.display = "none";
+            getEl("input-user").style.display = "none";
+            getEl("input-password").style.display = "none";
+            getEl("input-simple").style.display = "none";
+            getEl("input-phone-num").style.display = "none";
+            getEl("input-verify-code").style.display = "none";
             switch (globalConfig.authType){
                 case NO_AUTH:
                     window.authType = 0;
                     break;
                 case SIMPLE_PASSWORD:
-                    document.getElementById("input-simple").style.display = "flex";
+                    getEl("input-simple").style.display = "flex";
                     setPasswordComponent("input-simple")
                     window.authType = 1;
                     break;
@@ -214,12 +220,12 @@ Ajax.post(
                     window.authType = 15;
                     break;
                 case HOTSPOT:
-                    document.getElementById("hotspot-other-login").style.display = "block";
+                    getEl("hotspot-other-login").style.display = "block";
                     var options = "";
                     for (var i=0;i<globalConfig.hotspotTypes.length;i++) {
                         options += '<div id="'+globalConfig.hotspotTypes[i]+'" class="hotspot-item">'+hotspotMap[globalConfig.hotspotTypes[i]]+'</div>';
                     }
-                    document.getElementById("hotspot-selector").innerHTML += options;
+                    getEl("hotspot-selector").innerHTML += options;
                     hotspotChange(globalConfig.hotspotTypes[0]);
                     window.authType = globalConfig.hotspotTypes[0];
                     break;
@@ -231,29 +237,29 @@ Ajax.post(
             submitData['authType'] = window.authType;
             switch (window.authType){
                 case 3:
-                    submitData['voucherCode'] = document.getElementById("voucherCode").value;
+                    submitData['voucherCode'] = getEl("voucherCode").value;
                     break;
                 case 5:
-                    submitData['localuser'] = document.getElementById("username").value;
-                    submitData['localuserPsw'] = document.getElementById("password").value;
+                    submitData['localuser'] = getEl("username").value;
+                    submitData['localuserPsw'] = getEl("password").value;
                     break;
                 case 1:
-                    submitData['simplePassword'] = document.getElementById("simplePassword").value;
+                    submitData['simplePassword'] = getEl("simplePassword").value;
                     break;
                 case 0:
                     break;
                 case 6:
-                    submitData['phone'] = "+"+document.getElementById("country-code").value + document.getElementById("phone-number").value;
-                    submitData['code'] = document.getElementById("verify-code").value;
+                    submitData['phone'] = "+"+getEl("country-code").value + getEl("phone-number").value;
+                    submitData['code'] = getEl("verify-code").value;
                     break;
                 case 2:
                 case 8:
-                    submitData['username'] = document.getElementById("username").value;
-                    submitData['password'] = document.getElementById("password").value;
+                    submitData['username'] = getEl("username").value;
+                    submitData['password'] = getEl("password").value;
                     break;
                 case 15:
-                  submitData['ldapUsername'] = document.getElementById("username").value;
-                  submitData['ldapPassword'] = document.getElementById("password").value;
+                  submitData['ldapUsername'] = getEl("username").value;
+                  submitData['ldapPassword'] = getEl("password").value;
                   break;
                 case FORM_AUTH_ACCESS_TYPE:
                   $.extend(submitData, formAuthController.getAuthData());
@@ -285,9 +291,9 @@ Ajax.post(
                             isCommited = true;
                             landingUrl = data.result || landingUrl
                             window.location.href = landingUrl;
-                            document.getElementById("oper-hint").innerHTML = errorHintMap[data.errorCode];
+                            getEl("oper-hint").innerHTML = errorHintMap[data.errorCode];
                         } else{
-                            document.getElementById("oper-hint").innerHTML = errorHintMap[data.errorCode];
+                            getEl("oper-hint").innerHTML = errorHintMap[data.errorCode];
                         }
                     });
                 }
@@ -296,30 +302,30 @@ Ajax.post(
         }
         function hotspotChange (type) {
 
-            document.getElementById("input-voucher").style.display = "none";
-            document.getElementById("input-user").style.display = "none";
-            document.getElementById("input-password").style.display = "none";
-            document.getElementById("input-phone-num").style.display = "none";
-            document.getElementById("input-verify-code").style.display = "none";
-            document.getElementById("button-login").style.display = "block";
+            getEl("input-voucher").style.display = "none";
+            getEl("input-user").style.display = "none";
+            getEl("input-password").style.display = "none";
+            getEl("input-phone-num").style.display = "none";
+            getEl("input-verify-code").style.display = "none";
+            getEl("button-login").style.display = "block";
             window.authType = Number(type);
             switch (Number(type)) {
                 case VOUCHER_ACCESS_TYPE:
-                    document.getElementById("input-voucher").style.display = "block";
+                    getEl("input-voucher").style.display = "block";
                     setNormalButton()
                     break;
                 case LOCAL_USER_ACCESS_TYPE:
                 case EXTERNAL_RADIUS:
                 case RADIUS_ACCESS_TYPE:
                 case EXTERNAL_LDAP:
-                    document.getElementById("input-user").style.display = "flex";
-                    document.getElementById("input-password").style.display = "flex";
+                    getEl("input-user").style.display = "flex";
+                    getEl("input-password").style.display = "flex";
                     setPasswordComponent("input-password")
                     setNormalButton()
                     break;
                 case SMS_ACCESS_TYPE:
-                    document.getElementById("input-phone-num").style.display = "flex";
-                    document.getElementById("input-verify-code").style.display = "flex";
+                    getEl("input-phone-num").style.display = "flex";
+                    getEl("input-verify-code").style.display = "flex";
                     setNormalButton()
                     break;
                 case FORM_AUTH_ACCESS_TYPE:
@@ -328,38 +334,38 @@ Ajax.post(
             }
         }
         globalConfig.countryCode = "+" + parseInt(globalConfig.countryCode, 10);
-        document.getElementById("country-code").value = parseInt(globalConfig.countryCode, 10);
-        document.getElementById("hotspot-other-login").addEventListener("click", function (event) {
+        getEl("country-code").value = parseInt(globalConfig.countryCode, 10);
+        getEl("hotspot-other-login").addEventListener("click", function (event) {
             if (isMobile()) {
-              document.getElementById("hotspot-selector").style.display = "flex";
-              document.getElementById("hotspot-selector").style.width = '100%';
-              document.getElementById("hotspot-selector").style.transform = 'translate(-50%)';
-              document.getElementById("hotspot-selector").style.borderBottomRightRadius = '0';
-              document.getElementById("hotspot-selector").style.borderBottomLeftRadius = '0';
+              getEl("hotspot-selector").style.display = "flex";
+              getEl("hotspot-selector").style.width = '100%';
+              getEl("hotspot-selector").style.transform = 'translate(-50%)';
+              getEl("hotspot-selector").style.borderBottomRightRadius = '0';
+              getEl("hotspot-selector").style.borderBottomLeftRadius = '0';
 
-              setTimeout(() => {document.getElementById("hotspot-selector").style.bottom = "0px"})
+              setTimeout(() => {getEl("hotspot-selector").style.bottom = "0px"})
             } else {
-              document.getElementById("hotspot-selector").style.display = "flex";
-              document.getElementById("hotspot-selector").style.width = '520px';
-              document.getElementById("hotspot-selector").style.transform = 'translate(-50%, 50%)';
+              getEl("hotspot-selector").style.display = "flex";
+              getEl("hotspot-selector").style.width = '520px';
+              getEl("hotspot-selector").style.transform = 'translate(-50%, 50%)';
 
-              setTimeout(() => {document.getElementById("hotspot-selector").style.bottom = "50%"})
+              setTimeout(() => {getEl("hotspot-selector").style.bottom = "50%"})
             }
         });
-        document.getElementById("hotspot-selector").addEventListener("click", function (event) {
+        getEl("hotspot-selector").addEventListener("click", function (event) {
             const target = event.target;
             if (target.id === "hotspot-selector-close") {
-              document.getElementById("hotspot-selector").style.bottom = "-1000px";
+              getEl("hotspot-selector").style.bottom = "-1000px";
 
-              setTimeout(() => { document.getElementById("hotspot-selector").style.display = "none" })
+              setTimeout(() => { getEl("hotspot-selector").style.display = "none" })
             } else if (target.classList.contains('hotspot-item')) {
               hotspotChange(target.id)
-              document.getElementById("hotspot-selector").style.bottom = "-1000px";
+              getEl("hotspot-selector").style.bottom = "-1000px";
 
-              setTimeout(() => { document.getElementById("hotspot-selector").style.display = "none" })
+              setTimeout(() => { getEl("hotspot-selector").style.display = "none" })
             }
         });
-        document.getElementById("button-login").addEventListener("click", function () {
+        getEl("button-login").addEventListener("click", function () {
           if(window.authType === FORM_AUTH_ACCESS_TYPE) {
             formAuthController.showFormAuth(globalConfig);
           } else {
@@ -370,9 +376,9 @@ Ajax.post(
           $('#form-auth-msg').hide();
         })
         $("#form-auth-submit").on("click", function () {formAuthController.submitFormAuth(handleSubmit)});
-        document.getElementById("get-code").addEventListener("click", function(e){
+        getEl("get-code").addEventListener("click", function(e){
             e.preventDefault();
-            var phoneNum = document.getElementById("phone-number").value;
+            var phoneNum = getEl("phone-number").value;
             function sendSmsAuthCode () {
                 Ajax.post("/portal/sendSmsAuthCode",
                     JSON.stringify({
@@ -382,19 +388,19 @@ Ajax.post(
                         ssidName: ssidName,
                         radioId: radioId,
                         vid: vid,
-                        phone: "+" + document.getElementById("country-code").value + phoneNum
+                        phone: "+" + getEl("country-code").value + phoneNum
                     }),function(data){
                         data = JSON.parse(data);
                         if(data.errorCode !== 0){
-                            document.getElementById("oper-hint").innerHTML = errorHintMap[data.errorCode];
+                            getEl("oper-hint").innerHTML = errorHintMap[data.errorCode];
                         } else {
-                            document.getElementById("oper-hint").innerHTML = "SMS has been sent successfully.";
+                            getEl("oper-hint").innerHTML = "SMS has been sent successfully.";
                         }
                     }
                 );
             }
             sendSmsAuthCode();
-            document.getElementById("oper-hint").innerHTML = "Sending Authorization Code...";
+            getEl("oper-hint").innerHTML = "Sending Authorization Code...";
         });
         pageConfigParse();
     }
