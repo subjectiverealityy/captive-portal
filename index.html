@@ -21,7 +21,7 @@
 
     <div class="js-promo promo">
         <div class="promo-container">
-            <img src="background_mobile.png">
+            <img class="js-promo-image" src="img/oniyewu-yoruba.jpeg" alt="Promo">
         </div>
         <div class="promo-controls">
             <span class="promo-countdown-value">
@@ -152,38 +152,73 @@
 
         // AD LOGIC
         const ad = document.querySelector('.js-promo');
+        const adImage = document.querySelector('.js-promo-image');
         const adTimer = document.querySelector('.js-promo-timer');
         const adSkipper = document.querySelector('.js-promo-skipper');
 
-        const adStartTime = Date.now();
-        const adDurationSeconds = 30;
+        // shown in this order
+        const adImages = [
+            'img/oniyewu-yoruba.jpeg',
+            'img/oniyewu-english.jpeg',
+            'img/rural-general.jpeg'
+        ];
+        const adImageSeconds = 5; // per image
+        const adRounds = 2;
+        const adTotalSeconds = adImageSeconds * adImages.length * adRounds;
 
+        const adStartTime = Date.now();
+
+        let adSlideIndex = 0;
+
+        // seconds since the promo opened
         function adSecondsElapsed() {
             return Math.min(
-                adDurationSeconds,
+                adTotalSeconds,
                 Math.floor((Date.now() - adStartTime) / 1000)
             );
         }
 
-        adTimer.textContent = adDurationSeconds;
+        function adImageAt(slideIndex) {
+            return adImages[slideIndex % adImages.length];
+        }
 
+        //lLoad the next image ahead of time
+        function adPreloadNext() {
+            new Image().src = adImageAt(adSlideIndex + 1);
+        }
+
+        adTimer.textContent = adTotalSeconds;
+        adPreloadNext();
+
+        // checked every 250ms so the images change close to the 5 second mark
         const adCountdown = setInterval(function() {
-            const timeRemaining = adDurationSeconds - adSecondsElapsed();
-            adTimer.textContent = timeRemaining;
+            const secondsElapsed = adSecondsElapsed();
 
-            if (timeRemaining <= 0) {
+            if (secondsElapsed >= adTotalSeconds) {
                 // If the countdown finished, the visitor did not skip.
                 clearInterval(adCountdown);
                 gtag('event', 'portal_promo_view', { skipped: false });
                 ad.classList.add('remove-promo');
+                return;
             }
-        }, 1000);
 
+            adTimer.textContent = adTotalSeconds - secondsElapsed;
+
+            const slideIndex = Math.floor(secondsElapsed / adImageSeconds);
+            if (slideIndex !== adSlideIndex) {
+                adSlideIndex = slideIndex;
+                adImage.src = adImageAt(adSlideIndex);
+                adPreloadNext();
+            }
+        }, 250);
+
+        // skip closes the whole ad
         adSkipper.addEventListener('click', function() {
             clearInterval(adCountdown);
             gtag('event', 'portal_promo_view', {
                 skipped: true,
-                promo_skip_seconds: adSecondsElapsed()
+                promo_skip_seconds: adSecondsElapsed(),
+                promo_skip_image: (adSlideIndex % adImages.length) + 1
             });
             ad.classList.add('remove-promo');
         });
